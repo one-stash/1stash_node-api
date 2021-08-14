@@ -1,0 +1,9 @@
+.well-known
+node_modules
+/onedrive/auth.js
+/onedrive/userId.js
+/keys
+/ui/secrets.js
+/ui/dist
+secrets
+/auth/config
