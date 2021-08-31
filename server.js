@@ -1,38 +1,31 @@
 require('module-alias/register');
-
+const cors = require('cors');
 const fs = require('fs');
+
+const mongodb = require('mongodb');
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
 
-const {jwtAuth} = require('./auth/middleware');
 const cookieParser = require('cookie-parser');
 
-const {
-  JWT_SECRET,
-} = require('./auth/config');
-
-require('@db/connect')();
-
-const authState = {
-  username: null
-}
-
+app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(cookieParser());
 
-require('./api/checkToken')(app, jwtAuth(JWT_SECRET, authState));
-require('./api/signup')(app, authState);
-require('./api/login')(app, JWT_SECRET, authState);
-require('./api/logout')(app, authState);
+// var refreshToken = "";
 
-require('./api/files')(app, jwtAuth(JWT_SECRET, authState));
-require('./api/builds')(app, jwtAuth(JWT_SECRET, authState));
-require('./api/upload')(app, jwtAuth(JWT_SECRET, authState));
-require('./api/files')(app, jwtAuth(JWT_SECRET, authState));
+app.get('/', (req, res)=>{
+  res.json('we rule the world');
+})
 
-const PORT = process.env.PORT || 8080;
+require('./api/authorize')(app);
+require('./api/adduser')(app);
+require('./api/upload')(app);
+require('./api/files')(app);
+
+const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, function(){
   console.log(`Server running in ${process.env.NODE_ENV} mode in port ${PORT}`);

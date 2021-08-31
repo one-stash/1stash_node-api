@@ -1,28 +1,16 @@
-const msal = require('@azure/msal-node');
-const auth = require('@secrets/onedrive/auth');
 const onedriveApi = require('onedrive-api');
+var processToken = require('@lib/onedrive').process;
 
-module.exports = (app, jwtAuth)=>{
-    app.post('/api/files', jwtAuth, async (req, res)=>{
-        try {
-            const cca = new msal.ConfidentialClientApplication({auth});
-        
-            const clientCredentialRequest = {
-                scopes: ['https://graph.microsoft.com/.default']
-            };
-            
-            const {accessToken} = await cca.acquireTokenByClientCredential(clientCredentialRequest);
-
-            console.log(accessToken);
+module.exports = (app)=>{
+    app.post('/api/files', (req, res)=>{
+        processToken(req, (response)=>{
             onedriveApi.items.listChildren({
-                accessToken: accessToken,
+                accessToken: response.accessToken,
             }).then((childrens) => {
                 res.status(200).json(childrens);
+            }).catch((err)=>{
+                res.status(403).json(`Error: ${err}`);
             });
-        }
-        catch(error) {
-            res.status(401).json(`Error : ${error}`);
-        }
-        
+        });
     });
 }

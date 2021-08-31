@@ -1,23 +1,19 @@
-const mongoose = require('mongoose');
+const mongoClient = require('mongodb').MongoClient;
 const {DBNAME, DBHOST} = require('../config');
 
 
-module.exports = ()=>{
+module.exports = (callback)=>{
     try{
-        mongoose.connect(DBHOST, {
-            useCreateIndex: true,
-            useFindAndModify: true,
+        mongoClient.connect(DBHOST, {
             useNewUrlParser: true,
             useUnifiedTopology: true
-        });
-
-        mongoose.connection.once('open', (err)=>{
+        },
+        function(err, db) {
             if (err) throw err;
-
-            console.log(`Connect to ${DBNAME} database sucecessfully`);
+            callback(db);
         });
     }catch(e){
-        console.log("Unable to connect to database");
+        console.log(e);
     }
 
 }
