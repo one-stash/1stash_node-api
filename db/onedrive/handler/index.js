@@ -15,6 +15,23 @@ exports.save = (token)=>{
     });
 }
 
+exports.exist = (callback)=>{
+    DBConnect((db)=>{
+        var dbo = db.db("onestash");
+        dbo.collection("tokens").findOne({_id: 1}, function(err, result) {
+            if (err) callback(null, false);
+            if (result){
+                callback(null, true);
+                db.close();
+            }else{
+                callback(null, false)
+            }
+            
+        });
+
+    })
+}
+
 exports.get = (callback)=>{
     DBConnect((db)=>{
         var dbo = db.db("onestash");

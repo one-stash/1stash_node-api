@@ -20,10 +20,12 @@ app.get('/', (req, res)=>{
   res.json('we rule the world');
 })
 
-require('./api/authorize')(app);
+// require('./api/authUser')(app);
 require('./api/adduser')(app);
 require('./api/upload')(app);
 require('./api/files')(app);
+
+require('./lib/onedrive').init(app);
 
 const PORT = process.env.PORT || 5000;
 

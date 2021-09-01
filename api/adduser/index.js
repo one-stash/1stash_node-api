@@ -21,7 +21,5 @@ module.exports = (app)=>{
                 res.json("sent to "+email+" successful");
             });
         }
-        
-        
     });
 }
