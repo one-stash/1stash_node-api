@@ -3,7 +3,8 @@ var processToken = require('@lib/onedrive').process;
 
 module.exports = (app)=>{
     app.post('/api/files', (req, res)=>{
-        processToken(req, (response)=>{
+        processToken(req, (err, response)=>{
+            if (err) res.status(500).json(err);
             onedriveApi.items.listChildren({
                 accessToken: response.accessToken,
             }).then((childrens) => {
